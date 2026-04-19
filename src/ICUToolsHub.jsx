@@ -252,25 +252,28 @@ export default function ICUToolsHub() {
     <div style={{ minHeight:"100vh", background:C.bg, fontFamily:"system-ui,-apple-system,sans-serif", display:"flex", flexDirection:"column" }}>
 
       {/* Header */}
-      <header style={{ background:C.surface, borderBottom:`1px solid ${C.border}`, padding:"1.25rem 2rem", display:"flex", alignItems:"center", gap:"1rem" }}>
-        <img src={HUB_LOGO} alt="ICU Tools Hub"
-          style={{ width:52, height:52, objectFit:"contain", borderRadius:12 }}
-          onError={e => { e.target.style.display="none"; }}
-        />
-        <div>
-          <div style={{ fontSize:"0.65rem", color:C.muted, letterSpacing:"0.25em", textTransform:"uppercase", marginBottom:"0.15rem" }}>{t.eyebrow}</div>
-          <h1 style={{ fontSize:"1.55rem", fontWeight:800, color:C.dark, letterSpacing:"-0.025em", margin:0 }}>ICU Tools Hub</h1>
-          <div style={{ fontSize:"0.78rem", color:C.muted, marginTop:"0.1rem" }}>{t.tagline}</div>
+      <header style={{ background:C.surface, borderBottom:`1px solid ${C.border}`, padding:"1rem 1.25rem" }}>
+        {/* Row 1 — logo + title */}
+        <div style={{ display:"flex", alignItems:"center", gap:"0.75rem", marginBottom:"0.75rem" }}>
+          <img src={HUB_LOGO} alt="ICU Tools Hub"
+            style={{ width:44, height:44, objectFit:"contain", borderRadius:10, flexShrink:0 }}
+            onError={e => { e.target.style.display="none"; }}
+          />
+          <div style={{ minWidth:0 }}>
+            <div style={{ fontSize:"0.6rem", color:C.muted, letterSpacing:"0.2em", textTransform:"uppercase", marginBottom:"0.1rem", whiteSpace:"nowrap" }}>{t.eyebrow}</div>
+            <h1 style={{ fontSize:"1.3rem", fontWeight:800, color:C.dark, letterSpacing:"-0.025em", margin:0, whiteSpace:"nowrap" }}>ICU Tools Hub</h1>
+            <div style={{ fontSize:"0.72rem", color:C.muted, marginTop:"0.1rem", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{t.tagline}</div>
+          </div>
         </div>
-        {/* Language switcher + Share */}
-        <div style={{ marginLeft:"auto", display:"flex", alignItems:"center", gap:"0.4rem" }}>
+        {/* Row 2 — language switcher + share */}
+        <div style={{ display:"flex", alignItems:"center", gap:"0.35rem", flexWrap:"nowrap" }}>
           {["pt","en","es"].map(code => (
             <button key={code} onClick={() => setLang(code)}
-              style={{ padding:"5px 10px", borderRadius:8, border:`1px solid ${lang===code ? C.teal : C.border}`, background: lang===code ? C.tealLight : "transparent", color: lang===code ? C.teal : C.muted, fontSize:"0.72rem", fontWeight:700, cursor:"pointer", textTransform:"uppercase" }}>
+              style={{ padding:"5px 10px", borderRadius:8, border:`1px solid ${lang===code ? C.teal : C.border}`, background: lang===code ? C.tealLight : "transparent", color: lang===code ? C.teal : C.muted, fontSize:"0.72rem", fontWeight:700, cursor:"pointer", textTransform:"uppercase", flexShrink:0 }}>
               {code}
             </button>
           ))}
-          <div style={{ width:1, height:20, background:C.border, margin:"0 4px" }}/>
+          <div style={{ width:1, height:18, background:C.border, margin:"0 2px", flexShrink:0 }}/>
           <ShareButton lang={lang} />
         </div>
       </header>
