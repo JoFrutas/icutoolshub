@@ -1,0 +1,15 @@
+icutoolshub/
+├── public/
+│   └── images/
+│       ├── hub-logo.png          ← a tua imagem do hub (Gemini_Generated_Image_2idk...)
+│       ├── icon-vent.png         ← ventrx-icon-master.png
+│       ├── icon-hemo.png         ← Gemini_Generated_Image___1_.png
+│       ├── icon-abg.png          ← Gemini_Generated_Image_.png
+│       └── icon-dial.png         ← logo512.png
+├── src/
+│   ├── main.jsx
+│   ├── App.jsx
+│   └── ICUToolsHub.jsx           ← o ficheiro principal
+├── index.html
+├── package.json
+└── vite.config.js
