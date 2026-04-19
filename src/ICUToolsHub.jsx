@@ -109,6 +109,84 @@ const IconGitHub = () => (
   </svg>
 );
 
+// ─── Share labels per language ────────────────────────────────────────────────
+const SHARE = {
+  pt: { btn:"Partilhar", title:"ICU Tools Hub", text:"Ferramentas clínicas para cuidados intensivos — VentRx, HemoAssess, ABGRx, DialysisRx", copied:"Link copiado!" },
+  en: { btn:"Share",     title:"ICU Tools Hub", text:"Clinical decision support tools for intensive care — VentRx, HemoAssess, ABGRx, DialysisRx", copied:"Link copied!" },
+  es: { btn:"Compartir", title:"ICU Tools Hub", text:"Herramientas de apoyo clínico para cuidados intensivos — VentRx, HemoAssess, ABGRx, DialysisRx", copied:"¡Enlace copiado!" },
+};
+
+const SHARE_URL = "https://icutoolshub.vercel.app";
+
+// ─── Share button component ───────────────────────────────────────────────────
+function ShareButton({ lang }) {
+  const [feedback, setFeedback] = useState(false);
+  const s = SHARE[lang] || SHARE.en;
+
+  const handleShare = async () => {
+    // Web Share API — native sheet on mobile
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: s.title, text: s.text, url: SHARE_URL });
+        return;
+      } catch {
+        // user cancelled — do nothing
+        return;
+      }
+    }
+    // Fallback — copy to clipboard
+    try {
+      await navigator.clipboard.writeText(SHARE_URL);
+    } catch {
+      // last resort for old browsers
+      const el = document.createElement("textarea");
+      el.value = SHARE_URL;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand("copy");
+      document.body.removeChild(el);
+    }
+    setFeedback(true);
+    setTimeout(() => setFeedback(false), 2000);
+  };
+
+  return (
+    <button
+      onClick={handleShare}
+      title={s.btn}
+      style={{
+        display:"flex", alignItems:"center", gap:6,
+        padding:"5px 12px",
+        borderRadius:8,
+        border:`1px solid ${feedback ? C.teal : C.border}`,
+        background: feedback ? C.tealLight : "transparent",
+        color: feedback ? C.teal : C.muted,
+        fontSize:"0.72rem", fontWeight:700,
+        cursor:"pointer",
+        transition:"all 0.2s",
+        whiteSpace:"nowrap",
+      }}
+      onMouseEnter={e => { if (!feedback) { e.currentTarget.style.borderColor=C.teal; e.currentTarget.style.color=C.teal; e.currentTarget.style.background=C.tealLight; }}}
+      onMouseLeave={e => { if (!feedback) { e.currentTarget.style.borderColor=C.border; e.currentTarget.style.color=C.muted; e.currentTarget.style.background="transparent"; }}}
+    >
+      {feedback ? (
+        <>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          {s.copied}
+        </>
+      ) : (
+        <>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+          </svg>
+          {s.btn}
+        </>
+      )}
+    </button>
+  );
+}
+
 // ─── Main component ───────────────────────────────────────────────────────────
 export default function ICUToolsHub() {
   const [screen, setScreen]   = useState("lang");
@@ -184,14 +262,16 @@ export default function ICUToolsHub() {
           <h1 style={{ fontSize:"1.55rem", fontWeight:800, color:C.dark, letterSpacing:"-0.025em", margin:0 }}>ICU Tools Hub</h1>
           <div style={{ fontSize:"0.78rem", color:C.muted, marginTop:"0.1rem" }}>{t.tagline}</div>
         </div>
-        {/* Language switcher */}
-        <div style={{ marginLeft:"auto", display:"flex", gap:"0.4rem" }}>
+        {/* Language switcher + Share */}
+        <div style={{ marginLeft:"auto", display:"flex", alignItems:"center", gap:"0.4rem" }}>
           {["pt","en","es"].map(code => (
             <button key={code} onClick={() => setLang(code)}
               style={{ padding:"5px 10px", borderRadius:8, border:`1px solid ${lang===code ? C.teal : C.border}`, background: lang===code ? C.tealLight : "transparent", color: lang===code ? C.teal : C.muted, fontSize:"0.72rem", fontWeight:700, cursor:"pointer", textTransform:"uppercase" }}>
               {code}
             </button>
           ))}
+          <div style={{ width:1, height:20, background:C.border, margin:"0 4px" }}/>
+          <ShareButton lang={lang} />
         </div>
       </header>
 
