@@ -7,6 +7,7 @@ const ICON_HEMO = "/images/icon-hemo.png";
 const ICON_ABG  = "/images/icon-abg.png";
 const ICON_DIAL = "/images/icon-dial.png";
 const ICON_NUTR = "/images/icon-nutr.png";
+const ICON_ECORX = "/images/icon-ecorx.png";
 
 // ─── Translations ────────────────────────────────────────────────────────────
 const T = {
@@ -29,6 +30,7 @@ const T = {
       abg:  { sub: "Gasimetria Arterial",   desc: "Interpretação sistemática ácido-base com compensações esperadas, distúrbios mistos e correlação clínica.", tags: ["ABG","Ácido-base","Gasimetria"] },
       dial: { sub: "Substituição Renal",    desc: "Prescrição de CVVHDF, CVVH, CVVHD, SLED e IHD. Anticoagulação com citrato (RICH 2020). Triagem emergente por indicação.", tags: ["TSFR","Citrato","KDIGO"] },
       nutr: { sub: "Nutrição no Doente Crítico", desc: "Prescrição nutricional orientada por guidelines ESPEN 2023. Via entérica vs parentérica, metas calóricas e proteicas por fase clínica, rastreio de síndrome de realimentação e produtos ALERT/ULSLO.", tags: ["ESPEN","Entérica","Parentérica"] },
+      ecorx: { sub: "Ecografia em Medicina Intensiva", desc: "Consulta rápida de ecografia crítica por órgão. Indicações, medidas de referência, alertas, Doppler transcraniano e fontes, com interface PT/EN/ES.", tags: ["POCUS","CCUS","DTC"] },
     },
   },
   en: {
@@ -50,6 +52,7 @@ const T = {
       abg:  { sub: "Arterial Blood Gas",      desc: "Systematic acid-base interpretation with expected compensations, mixed disorders and clinical correlation.", tags: ["ABG","Acid-base","Blood gas"] },
       dial: { sub: "Renal Replacement",       desc: "CVVHDF, CVVH, CVVHD, SLED and IHD prescription. Citrate anticoagulation (RICH 2020). Emergent triage by indication.", tags: ["RRT","Citrate","KDIGO"] },
       nutr: { sub: "Critical Care Nutrition",  desc: "ESPEN 2023 guideline-driven nutritional prescription. Enteral vs parenteral route, energy and protein targets by clinical phase, refeeding syndrome screening and ALERT/ULSLO product matching.", tags: ["ESPEN","Enteral","Parenteral"] },
+      ecorx: { sub: "Critical Care Ultrasound", desc: "Organ-based critical care ultrasound quick reference. Indications, reference measurements, red flags, transcranial Doppler and sources, with PT/EN/ES interface.", tags: ["POCUS","CCUS","TCD"] },
     },
   },
   es: {
@@ -71,6 +74,7 @@ const T = {
       abg:  { sub: "Gasometría Arterial",     desc: "Interpretación ácido-base sistemática con compensaciones esperadas, trastornos mixtos y correlación clínica.", tags: ["ABG","Ácido-base","Gasometría"] },
       dial: { sub: "Sustitución Renal",       desc: "Prescripción de CVVHDF, CVVH, CVVHD, SLED e IHD. Anticoagulación con citrato (RICH 2020). Triaje emergente por indicación.", tags: ["TSR","Citrato","KDIGO"] },
       nutr: { sub: "Nutrición en el Paciente Crítico", desc: "Prescripción nutricional basada en guías ESPEN 2023. Vía enteral vs parenteral, objetivos calóricos y proteicos por fase clínica, cribado de síndrome de realimentación y productos ALERT/ULSLO.", tags: ["ESPEN","Enteral","Parenteral"] },
+      ecorx: { sub: "Ecografía en Medicina Intensiva", desc: "Consulta rápida de ecografía crítica por órgano. Indicaciones, mediciones de referencia, alertas, Doppler transcraneal y fuentes, con interfaz PT/EN/ES.", tags: ["POCUS","CCUS","DTC"] },
     },
   },
 };
@@ -82,6 +86,7 @@ const APPS = [
   { key:"abg",  name:"ABGRx",      url:"https://abgrx.vercel.app",      icon:ICON_ABG,  accent:"#175CD3", accentDark:"#0C3A80", accentBg:"#EFF8FF", accentBorder:"#A3C7F8" },
   { key:"dial", name:"DialysisRx", url:"https://dialysisrx.vercel.app", icon:ICON_DIAL, accent:"#7C3AED", accentDark:"#4C1D8F", accentBg:"#F3F0FF", accentBorder:"#C4B5FD" },
   { key:"nutr", name:"NutriRx ICU",url:"https://nutri-rx.vercel.app",   icon:ICON_NUTR, accent:"#2D9E6B", accentDark:"#1A5C3E", accentBg:"#E6F7F0", accentBorder:"#7FD4AD" },
+  { key:"ecorx",name:"EcoRx ICU",  url:"https://eco-rx.vercel.app/",    icon:ICON_ECORX, accent:"#0B6F92", accentDark:"#062947", accentBg:"#E0F6FA", accentBorder:"#79DCEB" },
 ];
 
 // ─── Colour tokens ────────────────────────────────────────────────────────────
@@ -116,9 +121,9 @@ const IconGitHub = () => (
 
 // ─── Share labels per language ────────────────────────────────────────────────
 const SHARE = {
-  pt: { btn:"Partilhar", title:"ICU Tools Hub", text:"Ferramentas clínicas para cuidados intensivos — VentRx, HemoAssess, ABGRx, DialysisRx, NutriRx ICU", copied:"Link copiado!" },
-  en: { btn:"Share",     title:"ICU Tools Hub", text:"Clinical decision support tools for intensive care — VentRx, HemoAssess, ABGRx, DialysisRx, NutriRx ICU", copied:"Link copied!" },
-  es: { btn:"Compartir", title:"ICU Tools Hub", text:"Herramientas de apoyo clínico para cuidados intensivos — VentRx, HemoAssess, ABGRx, DialysisRx, NutriRx ICU", copied:"¡Enlace copiado!" },
+  pt: { btn:"Partilhar", title:"ICU Tools Hub", text:"Ferramentas clínicas para cuidados intensivos — VentRx, HemoAssess, ABGRx, DialysisRx, NutriRx ICU, EcoRx ICU", copied:"Link copiado!" },
+  en: { btn:"Share",     title:"ICU Tools Hub", text:"Clinical decision support tools for intensive care — VentRx, HemoAssess, ABGRx, DialysisRx, NutriRx ICU, EcoRx ICU", copied:"Link copied!" },
+  es: { btn:"Compartir", title:"ICU Tools Hub", text:"Herramientas de apoyo clínico para cuidados intensivos — VentRx, HemoAssess, ABGRx, DialysisRx, NutriRx ICU, EcoRx ICU", copied:"¡Enlace copiado!" },
 };
 
 const SHARE_URL = "https://icutoolshub.vercel.app";

@@ -5,7 +5,9 @@ icutoolshub/
 │       ├── icon-vent.png         ← ventrx-icon-master.png
 │       ├── icon-hemo.png         ← Gemini_Generated_Image___1_.png
 │       ├── icon-abg.png          ← Gemini_Generated_Image_.png
-│       └── icon-dial.png         ← logo512.png
+│       ├── icon-dial.png         ← logo512.png
+│       ├── icon-nutr.png         ← logotipo NutriRx
+│       └── icon-ecorx.png        ← logotipo EcoRx
 ├── src/
 │   ├── main.jsx
 │   ├── App.jsx
