@@ -125,59 +125,91 @@ const SHARE = {
 };
 
 const SHARE_URL = "https://icutoolshub.vercel.app";
+const COPY_FAILURE = {
+  pt: "Não foi possível copiar. Selecione e copie esta ligação:",
+  en: "Could not copy. Select and copy this link:",
+  es: "No se pudo copiar. Seleccione y copie este enlace:",
+};
+
+async function copyHubLink() {
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(SHARE_URL);
+      return true;
+    }
+  } catch { /* Try the legacy copy API next. */ }
+  const previousFocus = document.activeElement;
+  const el = document.createElement("textarea");
+  el.value = SHARE_URL;
+  el.readOnly = true;
+  Object.assign(el.style, {position:"fixed",opacity:"0"});
+  try {
+    document.body.appendChild(el);
+    el.select();
+    return document.execCommand("copy") === true;
+  } catch {
+    return false;
+  } finally {
+    el.remove();
+    previousFocus?.focus();
+  }
+}
 
 // ─── Share button component ───────────────────────────────────────────────────
 function ShareButton({ lang }) {
-  const [feedback, setFeedback] = useState(false);
+  const [feedback, setFeedback] = useState("");
+  const [sharing, setSharing] = useState(false);
   const s = SHARE[lang] || SHARE.en;
 
+  useEffect(() => {
+    if (feedback !== "copied") return;
+    const timer = setTimeout(() => setFeedback(""), 2500);
+    return () => clearTimeout(timer);
+  }, [feedback]);
+
   const handleShare = async () => {
-    // Web Share API — native sheet on mobile
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: s.title, text: s.text, url: SHARE_URL });
-        return;
-      } catch {
-        // user cancelled — do nothing
-        return;
-      }
-    }
-    // Fallback — copy to clipboard
+    if (sharing) return;
+    setSharing(true);
+    setFeedback("");
     try {
-      await navigator.clipboard.writeText(SHARE_URL);
-    } catch {
-      // last resort for old browsers
-      const el = document.createElement("textarea");
-      el.value = SHARE_URL;
-      document.body.appendChild(el);
-      el.select();
-      document.execCommand("copy");
-      document.body.removeChild(el);
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: s.title, text: s.text, url: SHARE_URL });
+          return;
+        } catch (error) {
+          if (error?.name === "AbortError") return;
+        }
+      }
+      setFeedback(await copyHubLink() ? "copied" : "failed");
+    } finally {
+      setSharing(false);
     }
-    setFeedback(true);
-    setTimeout(() => setFeedback(false), 2000);
   };
 
   return (
+    <div style={{display:"grid",gap:8,justifyItems:"end",maxWidth:"100%"}}>
     <button
+      type="button"
       onClick={handleShare}
+      disabled={sharing}
       title={s.btn}
       style={{
         display:"flex", alignItems:"center", gap:6,
+        minHeight:44,
         padding:"5px 12px",
         borderRadius:8,
-        border:`1px solid ${feedback ? C.teal : C.border}`,
-        background: feedback ? C.tealLight : "transparent",
-        color: feedback ? C.teal : C.muted,
+        border:`1px solid ${feedback === "copied" ? C.teal : C.border}`,
+        background: feedback === "copied" ? C.tealLight : "transparent",
+        color: feedback === "copied" ? C.teal : C.muted,
         fontSize:"0.72rem", fontWeight:700,
         cursor:"pointer",
         transition:"all 0.2s",
         whiteSpace:"nowrap",
       }}
-      onMouseEnter={e => { if (!feedback) { e.currentTarget.style.borderColor=C.teal; e.currentTarget.style.color=C.teal; e.currentTarget.style.background=C.tealLight; }}}
-      onMouseLeave={e => { if (!feedback) { e.currentTarget.style.borderColor=C.border; e.currentTarget.style.color=C.muted; e.currentTarget.style.background="transparent"; }}}
+      onMouseEnter={e => { if (feedback !== "copied") { e.currentTarget.style.borderColor=C.teal; e.currentTarget.style.color=C.teal; e.currentTarget.style.background=C.tealLight; }}}
+      onMouseLeave={e => { if (feedback !== "copied") { e.currentTarget.style.borderColor=C.border; e.currentTarget.style.color=C.muted; e.currentTarget.style.background="transparent"; }}}
     >
-      {feedback ? (
+      {feedback === "copied" ? (
         <>
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
           {s.copied}
@@ -192,6 +224,14 @@ function ShareButton({ lang }) {
         </>
       )}
     </button>
+    <span role="status" style={{fontSize:12,color:C.teal}}>{feedback === "copied" ? s.copied : ""}</span>
+    {feedback === "failed" && <div style={{width:250,maxWidth:"100%",color:C.mid,fontSize:12,lineHeight:1.5}}>
+      <label>
+        <span role="alert">{COPY_FAILURE[lang] || COPY_FAILURE.en}</span>
+        <input autoFocus readOnly value={SHARE_URL} onFocus={event=>event.target.select()} style={{boxSizing:"border-box",width:"100%",marginTop:6,padding:8,border:`1px solid ${C.border}`,borderRadius:6}} />
+      </label>
+    </div>}
+    </div>
   );
 }
 
@@ -275,10 +315,10 @@ export default function ICUToolsHub() {
           </div>
         </div>
         {/* Row 2 — language switcher + share */}
-        <div style={{ display:"flex", alignItems:"center", gap:"0.35rem", flexWrap:"nowrap" }}>
+        <div style={{ display:"flex", alignItems:"center", gap:"0.35rem", flexWrap:"wrap" }}>
           {["pt","en","es"].map(code => (
-            <button key={code} onClick={() => setLang(code)}
-              style={{ padding:"5px 10px", borderRadius:8, border:`1px solid ${lang===code ? C.teal : C.border}`, background: lang===code ? C.tealLight : "transparent", color: lang===code ? C.teal : C.muted, fontSize:"0.72rem", fontWeight:700, cursor:"pointer", textTransform:"uppercase", flexShrink:0 }}>
+            <button key={code} onClick={() => setLang(code)} aria-pressed={lang === code}
+              style={{ minHeight:44, minWidth:44, padding:"5px 10px", borderRadius:8, border:`1px solid ${lang===code ? C.teal : C.border}`, background: lang===code ? C.tealLight : "transparent", color: lang===code ? C.teal : C.muted, fontSize:"0.72rem", fontWeight:700, cursor:"pointer", textTransform:"uppercase", flexShrink:0 }}>
               {code}
             </button>
           ))}
