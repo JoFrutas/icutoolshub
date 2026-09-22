@@ -290,7 +290,7 @@ export default function ICUToolsHub() {
       {/* Cards */}
       <main style={{ flex:1, padding:"2rem", maxWidth:980, margin:"0 auto", width:"100%" }}>
         <p style={{ fontSize:"0.72rem", color:C.muted, letterSpacing:"0.22em", textTransform:"uppercase", marginBottom:"1.5rem" }}>{t.sectionLabel}</p>
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(340px, 1fr))", gap:"1rem" }}>
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(min(100%, 340px), 1fr))", gap:"1rem" }}>
           {APPS.map(app => {
             const at  = t.apps[app.key];
             const isH = hovered === app.key;
@@ -298,7 +298,9 @@ export default function ICUToolsHub() {
               <a key={app.key} href={app.url} target="_blank" rel="noreferrer"
                 style={{ textDecoration:"none", display:"block" }}
                 onMouseEnter={() => setHovered(app.key)}
-                onMouseLeave={() => setHovered(null)}>
+                onMouseLeave={() => setHovered(null)}
+                onFocus={() => setHovered(app.key)}
+                onBlur={() => setHovered(null)}>
                 <div style={{
                   background:   isH ? app.accentBg : C.surface,
                   border:       `1.5px solid ${isH ? app.accentBorder : C.border}`,
@@ -337,7 +339,7 @@ export default function ICUToolsHub() {
                     ))}
                   </div>
                   {/* CTA */}
-                  <div style={{ fontSize:"0.82rem", fontWeight:700, color: isH ? app.accent : C.muted, transition:"color 0.15s" }}>
+                  <div style={{ display:"inline-flex", alignItems:"center", minHeight:44, padding:"8px 14px", borderRadius:9, background:app.accentBg, fontSize:"0.88rem", fontWeight:800, color:app.accentDark }}>
                     {t.openApp}
                   </div>
                 </div>
